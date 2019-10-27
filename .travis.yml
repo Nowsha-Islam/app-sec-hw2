@@ -1,0 +1,8 @@
+  
+before_install:
+  - sudo apt-get install check
+language: c
+compiler: gcc
+script: 
+  - make
+  - make test
