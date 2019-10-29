@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+
+<div align="center">
+{% block title %}SPELL CHECKER RESULTS{% endblock %}
+<a href="http://localhost:5000/spellcheck">Spell Check</a>
+
+</div>
+<p class="mb-0" id="textout">SUPPLIED TEXT: {{data}}</p>
+<p class="mb-0" id="misspelled">MISSPELLED: {{misspelled}}</p>
+
+</html>

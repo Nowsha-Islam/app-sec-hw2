@@ -1,0 +1,20 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Spell Check
+{% endblock  %}
+
+{% block content %}
+    <div class="container">
+
+      <form class="form-signin" method="POST" action="/spell_check">
+        <h2 class="form-signin-heading">Input text below</h2>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.inputText) }}
+        <div id=result>{{msg}}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Check</button>
+      </form>
+
+    </div> <!-- /container -->
+{% endblock %}

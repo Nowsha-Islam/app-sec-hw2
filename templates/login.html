@@ -1,0 +1,38 @@
+<!-- &#123;% block body %&#125;
+&#123;% if session['logged_in'] %&#125;
+
+You're logged in already!
+
+&#123;% else %&#125; -->
+<!-- <form action="/login" method="POST">
+  <input type="username" name="username" placeholder="Username">
+<input type="password" name="password" placeholder="Password">
+<input type="submit" value="Log in">
+</form>
+&#123;% endif %&#125;
+&#123;% endblock %&#125;
+&#123;% endraw %&#125;
+-->
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Login
+{% endblock  %}
+
+{% block content %}
+<a href="http://localhost:5000/spell_check" style="font-size:30px; padding-left:50px; margin-top:150px;">Spell Check</a> 
+    <div class="container">
+
+      <form class="form-signin" method="POST">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <!-- {{ form.hidden_tag() }} -->
+        {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.password) }}
+        {{ wtf.form_field(form.twofactor) }}
+        <div id="result" style="font-size:20px; margin-bottom:10px"> {{msg}}</div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+    </div> <!-- /container -->
+{% endblock %}
