@@ -26,7 +26,7 @@ csrf.init_app(app)
 class User(db.Model):
 	username = db.Column(db.String(15), unique=True, primary_key=True, nullable=False)
 	password = db.Column(db.String(80), nullable=False)
-	twofactor = db.Column(db.String(11), unique=True, nullable=False)
+	twofactor = db.Column(db.String(11), nullable=False)
 	
 	def __repr__(self):
 		return f"User('{self.username}','{self.password}','{self.twofactor}')"
