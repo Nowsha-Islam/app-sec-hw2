@@ -91,7 +91,6 @@ def login():
 		else:
 			userCheck = User.query.filter_by(username=('%s' % username)).first()
 			if username == userCheck.username and bcrypt.check_password_hash(userCheck.password, password) and twofactor==userCheck.twofactor:
-				print('success')
 				session['logged_in'] = True
 				# userToAdd = User(username=username, password=hashed_password, twofactor=twofactor)
 				# db.session.add(userToAdd)
@@ -109,7 +108,6 @@ def login():
 	if request.method == 'POST' and form.validate() and session.get('logged_in'): 
 		msg='Already Logged In'
 		return render_template('login.html', form=form,msg=msg)  
-
 	else:
 		msg=''
 		return render_template('login.html', form=form,msg=msg)
@@ -120,7 +118,7 @@ def spell_check():
 	misspelled =[]
 
 	if session.get('logged_in') and request.method == 'GET':
-		msg='input text'
+		msg=''
 		return render_template('spell_check.html', form=form, msg=msg)
 
 	if session.get('logged_in') and request.method == 'POST' and request.form['submit_button'] == 'Check':
@@ -128,7 +126,7 @@ def spell_check():
 		myFile = open("myFile.txt", "w")
 		myFile.write(data)
 		myFile.close()
-		input = data
+		#input = data
 		arguments = ("./a.out", "myFile.txt", "wordlist.txt")
 		try:
 			popen = subprocess.Popen(arguments, stdout=subprocess.PIPE)
@@ -144,7 +142,6 @@ def spell_check():
 	if not session.get('logged_in'):
 		msg='Not logged in'
 		return render_template('spell_check.html', form=form,msg=msg)
-
 	else:
 		msg=''
 		return render_template('spell_check.html', form=form, msg=msg)
