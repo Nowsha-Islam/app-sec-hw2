@@ -52,7 +52,7 @@ def home():
 	if not session.get('logged_in'):
 		return render_template('login.html')
 	else:
-		return "Hello Boss!"
+		return "Hello!"
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -111,7 +111,6 @@ def login():
 		return render_template('login.html', form=form,msg=msg)  
 
 	else:
-		print('no error')
 		msg=''
 		return render_template('login.html', form=form,msg=msg)
 
