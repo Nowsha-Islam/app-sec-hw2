@@ -6,3 +6,5 @@ Flask-User==1.0.1.5
 WTForms==2.2.1
 Flask-Bcrypt==0.7.1
 Flask-SQLAlchemy==2.4.1
+tox==3.14.0
+pytest==5.2.2
