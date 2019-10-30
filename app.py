@@ -61,10 +61,10 @@ def register():
 	if request.method == 'POST' and form.validate():
 		username = (form.username.data)
 		password = (form.password.data)
-		#hashed_password = bcrypt.generate_password_hash(pword).decode('utf-8')
+		hashed_password = bcrypt.generate_password_hash(pword).decode('utf-8')
 		twofactor = (form.twofactor.data)
 		if User.query.filter_by(username=('%s' % username)).first() == None:
-			userToAdd = User(username=username, password=password, twofactor=twofactor)
+			userToAdd = User(username=username, password=hashed_password, twofactor=twofactor)
 			db.session.add(userToAdd)
 			db.session.commit()
 			print('User Successfully Registered')
@@ -88,7 +88,7 @@ def login():
 		print('This is standard output')
 		username = (form.username.data)
 		password = (form.password.data)
-		#hashed_password = bcrypt.generate_password_hash(pword).decode('utf-8')
+		hashed_password = bcrypt.generate_password_hash(pword).decode('utf-8')
 		twofactor = (form.twofactor.data)
 		if User.query.filter_by(username=('%s' % username)).first() == None:
 			print('incorrect')
@@ -99,7 +99,7 @@ def login():
 			if username == userToAdd.username and password==userToAdd.password and twofactor==userToAdd.twofactor:
 				print('success')
 				session['logged_in'] = True
-				userToAdd = User(username=username, password=password, twofactor=twofactor)
+				userToAdd = User(username=username, password=hashed_password, twofactor=twofactor)
 				db.session.add(userToAdd)
 				db.session.commit()
 				msg='success'
