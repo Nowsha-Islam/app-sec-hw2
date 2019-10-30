@@ -1,15 +1,33 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
 </head>
 <body>
 
-<div align="center">
-{% block title %}SPELL CHECKER RESULTS{% endblock %}
-<a href="http://localhost:5000/spellcheck">Spell Check</a>
+<h2 class="form-signin-heading">Spell Check Output</h2>
 
-</div>
-<p class="mb-0" id="textout">SUPPLIED TEXT: {{data}}</p>
-<p class="mb-0" id="misspelled">MISSPELLED: {{misspelled}}</p>
+<h3 class="form-signin-heading"> Check more text: <a href="http://localhost:5000/spellcheck">Spell Check</a></h3>
 
-</html>
+<h3 class="form-signin-heading">Input: {{data}}</h3>
+<h3 class="form-signin-heading">{{misspelled}}</h3>
+
+</html> -->
+
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Login
+{% endblock  %}
+
+{% block content %} 
+    <div class="container">
+      	<h2 class="form-signin-heading">Spell Check Output</h2>
+
+		<h3 class="form-signin-heading"> Check more text: <a href="http://localhost:5000/spellcheck">Spell Check</a></h3>
+
+		<h3 class="form-signin-heading">Input: {{data}}</h3>
+		<h3 class="form-signin-heading">{{misspelled}}</h3>
+
+    </div> <!-- /container -->
+{% endblock %}

@@ -1,15 +1,16 @@
 from flask import Flask, flash, redirect, url_for, render_template, request, session, abort
 from flask_bootstrap import Bootstrap
-from flask_wtf import FlaskForm 	
+from flask_wtf import FlaskForm, CSRFProtect	
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, PasswordField
 from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, current_user, login_user, login_required
 from flask_user import roles_required,UserManager
+from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 import os
 import subprocess
 import sys
-
+csrf = CSRFProtect()
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -19,18 +20,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
-
-# userDict = {
-# 	'username' : 'value',
-# 	'password' : 'value',
-# 	'twofactor' : 'value'
-# }
+bcrypt = Bcrypt(app)
+csrf.init_app(app)
 
 class User(db.Model):
-	username = db.Column(db.String(15), unique=True, primary_key=True)
-	password = db.Column(db.String(80))
-	twofactor = db.Column(db.String(11), unique=True)
+	username = db.Column(db.String(15), unique=True, primary_key=True, nullable=False)
+	password = db.Column(db.String(80), nullable=False)
+	twofactor = db.Column(db.String(11), unique=True, nullable=False)
 	
+	def __repr__(self):
+		return f"User('{self.username}','{self.password}','{self.twofactor}')"
 
 class RegisterForm(FlaskForm):
 	username = StringField('username', id="uname", validators=[InputRequired(), Length(max=50)])
@@ -61,19 +60,17 @@ def register():
 	if request.method == 'POST' and form.validate():
 		username = (form.username.data)
 		password = (form.password.data)
-		hashed_password = bcrypt.generate_password_hash(pword).decode('utf-8')
+		hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 		twofactor = (form.twofactor.data)
 		if User.query.filter_by(username=('%s' % username)).first() == None:
 			userToAdd = User(username=username, password=hashed_password, twofactor=twofactor)
 			db.session.add(userToAdd)
 			db.session.commit()
-			print('User Successfully Registered')
 			msg="success"
 			return render_template('register.html', form=form, msg=msg)
 		else:
 			userToAdd = User.query.filter_by(username=('%s' % username)).first()
 			if username == userToAdd.username:
-				print('User Already Exists')
 				msg='failure'
 				return render_template('register.html', form=form, msg=msg)
 	else:
@@ -88,30 +85,32 @@ def login():
 		print('This is standard output')
 		username = (form.username.data)
 		password = (form.password.data)
-		hashed_password = bcrypt.generate_password_hash(pword).decode('utf-8')
+		hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 		twofactor = (form.twofactor.data)
 		if User.query.filter_by(username=('%s' % username)).first() == None:
 			print('incorrect')
 			msg='incorrect'
 			return render_template('login.html', form=form, msg=msg)
 		else:
-			userToAdd = User.query.filter_by(username=('%s' % username)).first()
-			if username == userToAdd.username and password==userToAdd.password and twofactor==userToAdd.twofactor:
+			userCheck = User.query.filter_by(username=('%s' % username)).first()
+			if username == userCheck.username and bcrypt.check_password_hash(userCheck.password, password) and twofactor==userCheck.twofactor:
 				print('success')
 				session['logged_in'] = True
-				userToAdd = User(username=username, password=hashed_password, twofactor=twofactor)
-				db.session.add(userToAdd)
-				db.session.commit()
+				# userToAdd = User(username=username, password=hashed_password, twofactor=twofactor)
+				# db.session.add(userToAdd)
+				# db.session.commit()
 				msg='success'
 				return render_template('login.html', form=form, msg=msg)
-			if pword != userToAdd.password:
-				print('incorrect password')
-				msg='Incorrect password'
-				return render_template('login.html', form=loginform,msg=msg)
-			if mfa != userToAdd.twofactor:
-				print('Two-Factor failure')
-				msg='Two-Factor failure'
-				return render_template('login.html', form=loginform,msg=msg)  
+			else:
+				if bcrypt.check_password_hash(userCheck.password, password)==False:
+				#if hashed_password != userCheck.password:
+					print('incorrect password')
+					msg='Incorrect password'
+					return render_template('login.html', form=form,msg=msg)
+				if twofactor != userCheck.twofactor:
+					print('Two-Factor failure')
+					msg='Two-Factor failure'
+					return render_template('login.html', form=form,msg=msg)  
 
 	if request.method == 'POST' and form.validate() and session.get('logged_in'): 
 		print('Already Logged In')
@@ -149,7 +148,7 @@ def spell_check():
 		return render_template('spell_check.html', form=form, msg=msg)
 
 	if session.get('logged_in') and request.method == 'POST' and request.form['submit_button'] == 'Check':
-		data = form.textbox.data
+		data = form.inputText.data
 		myFile = open("myFile.txt", "w")
 		myFile.write(data)
 		myFile.close()
@@ -164,7 +163,7 @@ def spell_check():
 		except subprocess.CalledProcessError as e:
 			print("Error :", e)
 			msg = "failure"
-		return render_template('results.html', data=input, misspelled=output, msg=msg)
+		return render_template('result.html', data=input, misspelled=output, msg=msg)
 
 	if not session.get('logged_in'):
 		msg='Not logged in'
