@@ -1,5 +1,5 @@
 Flask 1.1.1
-Flask-Bootstrap==3.3.7.1
+flask-bootstrap==3.3.7.1
 Flask-WTF==0.14.2
 Flask-Login==0.4.1
 Flask-User==1.0.1.5
