@@ -76,19 +76,16 @@ def register():
 	else:
 		msg=''
 		return render_template('register.html', form=form, msg=msg)
-	#return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	form = LoginForm()
 	if request.method == 'POST' and form.validate() and not session.get('logged_in'):
-		print('This is standard output')
 		username = (form.username.data)
 		password = (form.password.data)
 		hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 		twofactor = (form.twofactor.data)
 		if User.query.filter_by(username=('%s' % username)).first() == None:
-			print('incorrect')
 			msg='incorrect'
 			return render_template('login.html', form=form, msg=msg)
 		else:
@@ -103,17 +100,13 @@ def login():
 				return render_template('login.html', form=form, msg=msg)
 			else:
 				if bcrypt.check_password_hash(userCheck.password, password)==False:
-				#if hashed_password != userCheck.password:
-					print('incorrect password')
 					msg='Incorrect password'
 					return render_template('login.html', form=form,msg=msg)
 				if twofactor != userCheck.twofactor:
-					print('Two-Factor failure')
 					msg='Two-Factor failure'
 					return render_template('login.html', form=form,msg=msg)  
 
 	if request.method == 'POST' and form.validate() and session.get('logged_in'): 
-		print('Already Logged In')
 		msg='Already Logged In'
 		return render_template('login.html', form=form,msg=msg)  
 
@@ -121,22 +114,6 @@ def login():
 		print('no error')
 		msg=''
 		return render_template('login.html', form=form,msg=msg)
-
-	# else:
-	# 	error=''
-	# 	return render_template('login.html', form=form, error=error)
-
-	# if form.validate_on_submit():
-	# 	username = (form.username.data)
-	# 	password = (form.password.data)
-	# 	twofactor = (form.twofactor.data)
-	# 	if User.query.filter_by(username=('%s' % username)).first() == None:
-	# 		error = "username does not exist"	
-		# 	return render_template('login.html', form=form, error=error)
-
-		# return '<h1>Invalid username or password</h1>'
-	# error='no error'
-	# return render_template('login.html', form=form, error=error)
 
 @app.route('/spell_check', methods=['GET', 'POST'])
 def spell_check():
@@ -172,18 +149,7 @@ def spell_check():
 	else:
 		msg=''
 		return render_template('spell_check.html', form=form, msg=msg)
-
-
-	# if form.validate_on_submit():
- #    	hashed_password = generate_password_hash(form.password.data, method='sha256')
- #    	new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
- #    	db.session.add(new_user)
- #    	db.session.commit()
-
- #    	return '<h1>New user has been created!</h1>'
-	   #return '<h1>' + form.username.data + ' ' + form.email.data + ' ' + form.password.data + '</h1>'
 	
-
 if __name__ == "__main__":
 	app.secret_key = os.urandom(12)
 	app.run(debug=True,host='0.0.0.0', port=4000)
