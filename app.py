@@ -66,6 +66,10 @@ class LoginForm(FlaskForm):
 class SpellCheckForm(FlaskForm):
 	inputText = TextAreaField('input', id="inputtext", validators=[InputRequired(), Length(max=15000)])
 
+class userCheckForm(Form):
+    textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter User To Check Audit History"),validators.Length(max=20)], id='inputtext')
+   
+
 db.drop_all()
 db.create_all()
 
