@@ -1,0 +1,28 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+History
+{% endblock  %}
+
+{% block content %}
+
+<a href="http://localhost:5000/login_history">USER LOGIN HISTORY</a>
+
+<form method=post action="">
+  <dl>
+<div id=numqs> Total Queries Made: {{numqs}}</div>
+<div id=result>{{error}}
+
+<p><input type=submit name='submit_button' value='Check Query History For User'>
+{{ form.textbox }}
+<div id=query#></div>
+  </dl>
+{%for query in allqs %}
+  <li><a  id="query{{query.queryID}}" href="/history/query{{query.queryID}}">Query #{{query.queryID}}</a></li>
+{%endfor %}
+    <p><input type=submit name='submit_button' value='Log Out'>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+</form>
+
+{% endblock %}
