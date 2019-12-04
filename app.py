@@ -66,6 +66,11 @@ class LoginForm(FlaskForm):
 class SpellCheckForm(FlaskForm):
 	inputText = TextAreaField('input', id="inputtext", validators=[InputRequired(), Length(max=15000)])
 
+class historyForm(Form):
+    textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter Words to Check"), validators.Length(max=50000)], id='inputtext')
+
+
+
 class wordForm(Form):
 	textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter Words to Check"),validators.Length(max=20000)], id='inputtext')
 	
@@ -192,7 +197,7 @@ def spell_check():
 
 @app.route('/history', methods=['GET', 'POST'])
 def history():
-	form = SpellCheckForm()
+	form = historyForm(request.form)
 	if session.get('logged_in') and request.method =='POST':
 		try:
 			uq = form.textbox.data

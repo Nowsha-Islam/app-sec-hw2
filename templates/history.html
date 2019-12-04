@@ -11,13 +11,15 @@ History
 
 <form method=post action="">
   <dl>
-<div id=numqueries> Total Queries Made: {{queries}}</div>
+<div id=numqueries> Total Queries Made: {{numqueries}}</div>
 <div id=result>{{error}}
 
 <p><input type=submit name='submit_button' value='Check Query History For User'>
 {{ form.textbox }}
+
 <div id=query#></div>
   </dl>
+
 {%for query in allqs %}
   <li><a  id="query{{query.queryID}}" href="/history/query{{query.queryID}}">Query #{{query.queryID}}</a></li>
 {%endfor %}
