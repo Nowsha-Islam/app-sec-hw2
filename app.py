@@ -66,6 +66,10 @@ class LoginForm(FlaskForm):
 class SpellCheckForm(FlaskForm):
 	inputText = TextAreaField('input', id="inputtext", validators=[InputRequired(), Length(max=15000)])
 
+class wordForm(Form):
+    textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter Words to Check"),validators.Length(max=20000)], id='inputtext')
+    
+
 class userCheckForm(Form):
     textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter User To Check Audit History"),validators.Length(max=20)], id='inputtext')
    
@@ -239,7 +243,7 @@ def queryPage(query):
 def login_history():
 	form = userCheckForm(request.form)
 	try:
-		dbUserCheck = userTable.query.filter_by(username=('%s' % current_user.username)).first()
+		dbUserCheck = User.query.filter_by(username=('%s' % current_user.username)).first()
 
 		if session.get('logged_in') and request.method =='GET' and dbUserCheck.accessRole=='admin':
 			error = 'Authenticated User '
