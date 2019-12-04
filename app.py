@@ -205,7 +205,7 @@ def history():
 					allqs = ''
 				return render_template('history.html', queries=total,allqs=allqs,form=form)
 		except AttributeError:
-			return render_template('unauthorized.html')
+			return render_template('unauth.html')
 	if session.get('logged_in') and request.method =='GET':
 		# Wrap try / except around this statement in case there are no results (NONE)
 		try:
