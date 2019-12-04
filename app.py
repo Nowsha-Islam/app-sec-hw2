@@ -66,7 +66,7 @@ class RegisterForm(FlaskForm):
 	twofactor = StringField('twofactor', id="2fa", validators=[InputRequired(), Length(min=10, max=11)])
 
 class LoginForm(FlaskForm):
-	username = StringField('username', id="uname", validators=[InputRequired(), Length(min=4, max=15)])
+	username = StringField('username', id="uname", validators=[InputRequired(), Length(min=4, max=50)])
 	password = PasswordField('password', id="pword", validators=[InputRequired(), Length(min=8, max=80)])
 	twofactor = StringField('twofactor', id="2fa", validators=[InputRequired(), Length(min=10, max=11)])
 
