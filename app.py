@@ -227,7 +227,7 @@ def queryPage(query):
 			submitText = history.text
 			returnedText = history.results
 		except AttributeError:
-			return render_template('unauthorized.html')
+			return render_template('unauth.html')
 		return render_template('queryIDresults.html', queryID=queryID, username=username,submitText=submitText,results=returnedText)
 
 # Page for the Admin to retrieve login history of users 

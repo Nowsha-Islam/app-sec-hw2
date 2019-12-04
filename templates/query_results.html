@@ -2,16 +2,15 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
-Login History Results
+History
 {% endblock  %}
 
 {% block content %}
 
-{{ form.textbox }}
-<div id=userid>{{message}}</div>
 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-{% for your_list_element in misspelled %}
-	<p>{{ your_list_element }} </p>
-{% endfor %}
+<p> Query ID: <div id=queryid>{{ queryID }} </p>
+<p> Username: <div id=username>{{username }} </p>
+<p> Requested Text: <div id=text>{{ submitText }} </p>
+<p> Returned Text : <div id=results>{{ results }} </p>
 
 {% endblock %}
