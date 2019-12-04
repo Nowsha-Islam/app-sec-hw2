@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, url_for, render_template, request, session, abort
 from flask_bootstrap import Bootstrap
-from flask_wtf import FlaskForm, CSRFProtect	
+from flask_wtf import Form, FlaskForm, CSRFProtect	
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField, PasswordField
 from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, current_user, login_user, login_required
@@ -67,11 +67,11 @@ class SpellCheckForm(FlaskForm):
 	inputText = TextAreaField('input', id="inputtext", validators=[InputRequired(), Length(max=15000)])
 
 class wordForm(Form):
-    textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter Words to Check"),validators.Length(max=20000)], id='inputtext')
-    
+	textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter Words to Check"),validators.Length(max=20000)], id='inputtext')
+	
 
 class userCheckForm(Form):
-    textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter User To Check Audit History"),validators.Length(max=20)], id='inputtext')
+	textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter User To Check Audit History"),validators.Length(max=20)], id='inputtext')
    
 
 db.drop_all()
@@ -188,7 +188,7 @@ def spell_check():
 			db.session.commit()
 			return render_template('spell_check.html', error=error)
 		except AttributeError:
-		    return render_template('spell_check.html', error=error)
+			return render_template('spell_check.html', error=error)
 
 @app.route('/history', methods=['GET', 'POST'])
 def history():
@@ -245,10 +245,12 @@ def login_history():
 	try:
 		dbUserCheck = User.query.filter_by(username=('%s' % current_user.username)).first()
 
-		if session.get('logged_in') and request.method =='GET' and dbUserCheck.accessRole=='admin':
-			error = 'Authenticated User '
-			return render_template('login_history.html', form=form, error=error)
+		# if session.get('logged_in') and request.method =='GET' and dbUserCheck.accessRole=='admin':
+		# 	error = 'Authenticated User '
+		# 	return render_template('login_history.html', form=form, error=error)
 	
+		if request.method == 'GET':
+			return render_template('login_history.html', form=form, error=error)
 		if session.get('logged_in') and request.method == 'POST' and request.form['submit_button'] == 'Check User Login History':
 			userToQuery = (form.textbox.data)
 			results = History.query.filter_by(username=('%s' % userToQuery)).all()
@@ -257,7 +259,8 @@ def login_history():
 			error='Please Login As Admin'
 			return render_template('login_history.html', form=form, error=error)
 	except:
-	    return render_template('login_history.html')
+		error=''
+		return render_template('login_history.html', form=form, error=error)
 
 	
 if __name__ == "__main__":
