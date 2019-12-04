@@ -117,7 +117,7 @@ def login():
 			userCheck = User.query.filter_by(username=('%s' % username)).first()
 			if username == userCheck.username and bcrypt.check_password_hash(userCheck.password, password) and twofactor==userCheck.twofactor:
 				session['logged_in'] = True
-				userToAdd = History(username=username, password=hashed_password, twofactor=twofactor)
+				userToAdd = History(action='LoggedIn', username=username,loggedIn=datetime.now())
 				db.session.add(userToAdd)
 				db.session.commit()
 				msg='success'
