@@ -63,12 +63,12 @@ class spellHistory(db.Model):
 class RegisterForm(FlaskForm):
 	username = StringField('username', id="uname", validators=[InputRequired(), Length(max=50)])
 	password = StringField('password', id="pword", validators=[InputRequired(), Length(min=8, max=80)])
-	twofactor = StringField('twofactor', id="2fa", validators=[InputRequired(), Length(min=11, max=11)])
+	twofactor = StringField('twofactor', id="2fa", validators=[InputRequired(), Length(min=10, max=11)])
 
 class LoginForm(FlaskForm):
 	username = StringField('username', id="uname", validators=[InputRequired(), Length(min=4, max=15)])
 	password = PasswordField('password', id="pword", validators=[InputRequired(), Length(min=8, max=80)])
-	twofactor = StringField('twofactor', id="2fa", validators=[InputRequired(), Length(min=11, max=11)])
+	twofactor = StringField('twofactor', id="2fa", validators=[InputRequired(), Length(min=10, max=11)])
 
 class SpellCheckForm(FlaskForm):
 	inputText = TextAreaField('input', id="inputtext", validators=[InputRequired(), Length(max=15000)])
@@ -263,8 +263,8 @@ def queryPage(query):
 			history = spellHistory.query.filter_by(queryID=('%s' % query)).first()
 			queryID = history.queryID
 			username = history.username
-			submitText = history.text
-			returnedText = history.results
+			submitText = history.querytext
+			returnedText = history.queryresults
 		except AttributeError:
 			return render_template('unauth.html')
 		return render_template('queryIDresults.html', queryID=queryID, username=username,submitText=submitText,results=returnedText)
