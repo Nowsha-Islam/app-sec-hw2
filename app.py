@@ -200,29 +200,28 @@ def history():
 			dbUserCheck = User.query.filter_by(username=('%s' % uq)).first()
 			if dbUserCheck.accessRole=='admin':
 				try:
-					queries = spellHistory.query.filter_by(username=('%s' % uq)).order_by(spellHistory.queryID.desc()).first()
+					numqueries = spellHistory.query.filter_by(username=('%s' % uq)).order_by(spellHistory.queryID.desc()).first()
 					allqs =  spellHistory.query.filter_by(username=('%s' % uq)).all()
-					total = queries.queryID
+					total = numqueries.queryID
 				except AttributeError:
-					queries = ''
+					numqueries = ''
 					total = 0
 					allqs = ''
-				return render_template('history.html', queries=total,allqs=allqs,form=form)
+				return render_template('history.html', numqueries=total,allqs=allqs,form=form)
 		except AttributeError:
 			return render_template('unauth.html')
 	if session.get('logged_in') and request.method =='GET':
-		# Wrap try / except around this statement in case there are no results (NONE)
 		try:
-			queries = spellHistory.query.filter_by(username=('%s' % current_user.username)).order_by(spellHistory.queryID.desc()).first()
+			numqueries = spellHistory.query.filter_by(username=('%s' % current_user.username)).order_by(spellHistory.queryID.desc()).first()
 			allqs =  spellHistory.query.filter_by(username=('%s' % current_user.username)).all()
-			total = queries.queryID
+			total = numqueries.queryID
 		except AttributeError:
-			queries = ''
+			numqueries = ''
 			total = 0
 			allqs = ''
-		return render_template('history.html', queries=total,allqs=allqs,form=form)
-	# else:
-	# 	return render_template('unauthorized.html')
+		return render_template('history.html', numqueries=total,allqs=allqs,form=form)
+	else:
+		return render_template('unauth.html')
 
 @app.route("/history/<query>")
 def queryPage(query):
