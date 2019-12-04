@@ -29,9 +29,16 @@ class User(db.Model):
 	username = db.Column(db.String(15), unique=True, primary_key=True, nullable=False)
 	password = db.Column(db.String(80), nullable=False)
 	twofactor = db.Column(db.String(11), nullable=False)
-	
+	level = db.Column(db.String(100))
+
 	def __repr__(self):
 		return f"User('{self.username}','{self.password}','{self.twofactor}')"
+
+	def get_id(self):
+		return self.username
+
+	def get_active(self):
+		return True
 
 class History(db.Model):
 	login_id = db.Column(db.Integer(),unique=True,nullable=False,primary_key=True,autoincrement=True)
@@ -47,11 +54,11 @@ class History(db.Model):
 class spellHistory(db.Model):
 	queryID= db.Column(db.Integer(),unique=True,nullable=False,primary_key=True,autoincrement=True)
 	username = db.Column(db.String(15), unique=False,nullable=False)
-	text = db.Column(db.String(30000), unique=False,nullable=False)
-	results = db.Column(db.String(30000), unique=False,nullable=False)
+	querytext = db.Column(db.String(30000), unique=False,nullable=False)
+	queryresults = db.Column(db.String(30000), unique=False,nullable=False)
 
 	def __repr__(self):
-		return f"spellHistory('{self.queryID}','{self.username}','{self.text}','{self.results}')"
+		return f"spellHistory('{self.queryID}','{self.username}','{self.querytext}','{self.queryresults}')"
 
 class RegisterForm(FlaskForm):
 	username = StringField('username', id="uname", validators=[InputRequired(), Length(max=50)])
@@ -67,7 +74,7 @@ class SpellCheckForm(FlaskForm):
 	inputText = TextAreaField('input', id="inputtext", validators=[InputRequired(), Length(max=15000)])
 
 class historyForm(Form):
-    textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter Words to Check"), validators.Length(max=50000)], id='inputtext')
+	textbox = TextAreaField('textbox', [validators.DataRequired(message="Enter Words to Check"), validators.Length(max=50000)], id='inputtext')
 
 
 
@@ -81,6 +88,14 @@ class userCheckForm(Form):
 
 db.drop_all()
 db.create_all()
+
+adminToAdd = User(username='admin', password=bcrypt.generate_password_hash('Administrator@1').decode('utf-8'), twofactor='12345678901', level='admin')
+db.session.add(adminToAdd)
+db.session.commit()
+
+@login_manager.user_loader
+def user_loader(username):
+	return userCreds.query.get(username)
 
 @app.route('/')
 def home():
@@ -149,6 +164,18 @@ def login():
 	else:
 		msg=''
 		return render_template('login.html', form=form,msg=msg)
+
+	if session.get('logged_in') and request.method =='POST' and request.form['submit_button'] =='Log Out':
+		error='Logged Out'
+		session.pop('logged_in', None)
+		try:
+			userLogOutToAdd = History(action='LoggedOut', username=current_user.username,loggedOut=datetime.now())
+			db.session.add(userLogOutToAdd)
+			db.session.commit()
+			return render_template('login.html', error=error)
+		except AttributeError:
+			return render_template('login.html', error=error)
+
 
 @app.route('/spell_check', methods=['GET', 'POST'])
 def spell_check():

@@ -10,7 +10,7 @@ History
 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 <p> Query ID: <div id=queryid>{{ queryID }} </p>
 <p> Username: <div id=username>{{username }} </p>
-<p> Requested Text: <div id=text>{{ submitText }} </p>
-<p> Returned Text : <div id=results>{{ results }} </p>
+<p> Requested Text: <div id=querytext>{{ submitText }} </p>
+<p> Returned Text : <div id=queryresults>{{ results }} </p>
 
 {% endblock %}
